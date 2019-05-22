@@ -18,12 +18,11 @@
    & {:keys [state return_url]}]
   (let [uri (uri/uri->map (uri/make authorization-uri) true)
         query (assoc (:query uri)
-                :client_id client-id
-                :redirect_uri (cond-> redirect-uri
-                                (-> return_url str/blank? not)
-                                (str "?return_url=" return_url))
-                :response_type (or response-type "code"))
+                     :client_id client-id
+                     :redirect_uri redirect-uri
+                     :response_type (or response-type "code"))
         query (if state (assoc query :state state) query)
+        query (if return_url (assoc query :return_url return_url) query)
         query (if scope
                 (assoc query :scope (str/join " " scope))
                 query)]
