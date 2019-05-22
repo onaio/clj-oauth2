@@ -20,7 +20,7 @@
         query (assoc (:query uri)
                 :client_id client-id
                 :redirect_uri (cond-> redirect-uri
-                                (-> return-url blank? not)
+                                (-> return-url str/blank? not)
                                 (str "?return-url=" return-url))
                 :response_type (or response-type "code"))
         query (if state (assoc query :state state) query)
