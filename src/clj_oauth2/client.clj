@@ -20,9 +20,9 @@
         query (assoc (:query uri)
                      :client_id client-id
                      :redirect_uri redirect-uri
-                     :response_type (or response-type "code"))
+                     :response_type (or response-type "code")
+                     :return_url return_url)
         query (if state (assoc query :state state) query)
-        query (if return_url (assoc query :return_url return_url) query)
         query (if scope
                 (assoc query :scope (str/join " " scope))
                 query)]
@@ -86,6 +86,12 @@
                           (.startsWith content-type "text/javascript"))) ; Facebookism
                (read-json body)
                (uri/form-url-decode body)) ; Facebookism
+        _ (prn ">>>>>>BODY")
+        _ (prn body)
+        _ (prn ">>>>>>BODY")
+        _ (prn ">>>>>>ERROR")
+        _ (prn (:error body))
+        _ (prn ">>>>>>ERROR")
         error (:error body)]
     (if (or error (not= status 200))
       (throw (OAuth2Exception. (if error
