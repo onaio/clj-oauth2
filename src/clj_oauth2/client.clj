@@ -20,8 +20,7 @@
         query (assoc (:query uri)
                      :client_id client-id
                      :redirect_uri redirect-uri
-                     :response_type (or response-type "code")
-                     :return_url return_url)
+                     :response_type (or (str response-type "&return_url=" return_url) "code"))
         query (if state (assoc query :state state) query)
         query (if scope
                 (assoc query :scope (str/join " " scope))
