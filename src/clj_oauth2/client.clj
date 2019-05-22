@@ -15,14 +15,12 @@
            redirect-uri
            scope
            response-type]}
-   & {:keys [state return_url]}]
+   & {:keys [state]}]
   (let [uri (uri/uri->map (uri/make authorization-uri) true)
         query (assoc (:query uri)
-                     :client_id client-id
-                     :redirect_uri redirect-uri
-                     :response_type (if response-type
-                                      (str response-type "&return_url=" return_url)
-                                      (str "code" "&return_url=" return_url)))
+                :client_id client-id
+                :redirect_uri redirect-uri
+                :response_type (or response-type "code"))
         query (if state (assoc query :state state) query)
         query (if scope
                 (assoc query :scope (str/join " " scope))
@@ -87,12 +85,6 @@
                           (.startsWith content-type "text/javascript"))) ; Facebookism
                (read-json body)
                (uri/form-url-decode body)) ; Facebookism
-        _ (prn ">>>>>>BODY")
-        _ (prn body)
-        _ (prn ">>>>>>BODY")
-        _ (prn ">>>>>>ERROR")
-        _ (prn (:error body))
-        _ (prn ">>>>>>ERROR")
         error (:error body)]
     (if (or error (not= status 200))
       (throw (OAuth2Exception. (if error
